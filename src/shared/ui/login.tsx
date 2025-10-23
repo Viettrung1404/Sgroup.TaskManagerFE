@@ -4,7 +4,6 @@ import { Input } from "@/shared/ui/input";
 import { Label } from "@/shared/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/shared/ui/card";
 import { useState } from "react";
-import { set } from "zod";
 
 export function Login({
     className,
