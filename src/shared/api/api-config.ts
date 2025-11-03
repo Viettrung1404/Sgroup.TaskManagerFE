@@ -1,8 +1,6 @@
 import axios, { type AxiosInstance, type InternalAxiosRequestConfig } from 'axios';
+import { tokenStorage } from '@/shared/utils/tokenStorage';
 
-/**
- * Cấu hình base cho Axios instance
- */
 const apiConfig = {
   baseURL: import.meta.env.VITE_API_URL || 'http://localhost:3000/',
   timeout: 10000,
@@ -16,7 +14,7 @@ const apiClient: AxiosInstance = axios.create(apiConfig);
 // Request Interceptor - Thêm token vào mỗi request
 apiClient.interceptors.request.use(
   (config: InternalAxiosRequestConfig) => {
-    const token = localStorage.getItem('authToken');
+    const token = tokenStorage.getAccessToken();
     
     if (token && config.headers) {
       config.headers.Authorization = `Bearer ${token}`;
@@ -26,6 +24,7 @@ apiClient.interceptors.request.use(
       method: config.method?.toUpperCase(),
       url: config.url,
       data: config.data,
+      hasToken: !!token,
     });
     
     return config;
@@ -50,7 +49,8 @@ apiClient.interceptors.response.use(
   (error) => {
     // Xử lý lỗi 401 - Unauthorized
     if (error.response?.status === 401) {
-      localStorage.removeItem('authToken');
+      // Xử lý refresh token
+      
       window.location.href = '/login';
     }
     

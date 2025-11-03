@@ -4,13 +4,14 @@ import react from "@vitejs/plugin-react"
 import { defineConfig } from "vite"
 
 // https://vite.dev/config/
-export default defineConfig({
+export default defineConfig(({ mode }) => ({
   plugins: [react(), tailwindcss()],
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),
     },
   },
-  base: '/Sgroup.TaskManagerFE/',
-})
+  // ✅ Chỉ apply base path khi build production
+  base: mode === 'production' ? '/Sgroup.TaskManagerFE/' : '/',
+}))
 

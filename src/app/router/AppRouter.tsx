@@ -1,7 +1,11 @@
 import { Route, Routes } from "react-router-dom";
-import { LoginPage } from "@/pages/LoginPage";
 import { ROUTES } from "@/shared/config";
-import { HomePage } from "@/pages/HomePage/HomePage";
+import { 
+  HomePage, 
+  LoginPage,
+  DashboardPage,
+  ResultPage
+} from "@/pages/";
 
 export const AppRouter = () => {
   return (
@@ -12,6 +16,8 @@ export const AppRouter = () => {
           element={<HomePage />}
         />
         <Route path={ROUTES.LOGIN} element={<LoginPage />} />
+        <Route path={ROUTES.DASHBOARD} element={<DashboardPage />} />
+        <Route path={ROUTES.RESULT} element={<ResultPage />} />
       </Routes>
     </>
   );
