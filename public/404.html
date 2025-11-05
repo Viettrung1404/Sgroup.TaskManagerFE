@@ -9,15 +9,25 @@
         // GitHub Pages SPA redirect hack
         // https://github.com/rafgraph/spa-github-pages
 
-        // Store the redirect path
-        const path = window.location.pathname.slice(1);
-        const redirect = '/' + (path || '');
+        const basePath = '/Sgroup.TaskManagerFE';
+        let path = window.location.pathname;
+
+        // ✅ Remove basePath if it exists at the start
+        if (path.startsWith(basePath)) {
+            path = path.slice(basePath.length);
+        }
+
+        // Ensure path starts with /
+        if (!path.startsWith('/')) {
+            path = '/' + path;
+        }
 
         // Redirect to index.html with the path as a query parameter
         window.location.replace(
             window.location.origin +
-            '/Sgroup.TaskManagerFE/?redirect=' +
-            encodeURIComponent(redirect)
+            basePath +
+            '/?redirect=' +
+            encodeURIComponent(path)
         );
     </script>
 </head>
