@@ -10,6 +10,15 @@ export interface User {
 //   updatedAt: string; // ISO date string
 }
 
+export interface Workspace {
+  id: string;
+  title: string;
+  description: string | null;
+  visibility: 'private' | 'public';
+  updatedAt: string;
+  createdAt: string;
+}
+
 // DTO for login/register responses
 export interface AuthResponse {
   accessToken: string;

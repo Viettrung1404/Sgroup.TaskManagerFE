@@ -1,6 +1,5 @@
 "use client"
 
-import * as React from "react"
 import {
   Kanban,
   LayoutDashboard
@@ -17,6 +16,14 @@ import {
   SidebarRail,
 } from "@/shared/ui/sidebar"
 
+import type { Workspace } from "@/shared/types"
+import { useEffect, useState } from "react"
+import { workspaceService } from "@/shared/api/services/workspaceService"
+
+interface WorkspaceWithLogo extends Workspace {
+  logo: React.ElementType
+}
+
 // This is sample data.
 const data = {
   user: {
@@ -26,19 +33,19 @@ const data = {
   },
   teams: [
     {
-      name: "Acme Inc",
+      title: "Acme Inc",
       logo: Kanban,
-      plan: "Enterprise",
+      description: "Enterprise",
     },
     {
-      name: "Acme Corp.",
+      title: "Acme Corp.",
       logo: Kanban,
-      plan: "Startup",
+      description: "Startup",
     },
     {
-      name: "Evil Corp.",
+      title: "Evil Corp.",
       logo: Kanban,
-      plan: "Free",
+      description: "Free",
     },
   ],
   navMain: [
@@ -66,10 +73,41 @@ const data = {
 }
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+  // Call api lấy dữ liệu của workspace, board, user ở đây
+  const [workspaces, setWorkspaces] = useState<WorkspaceWithLogo[]>([])
+
+  useEffect(() => {
+    let isMounted = true; // ✅ Prevent state update if unmounted
+
+    async function fetchWorkspaces() {
+      try {
+        const response = await workspaceService.getAll();
+        console.log('Fetched workspaces:', response);
+        
+        if (isMounted) {
+          const workspacesData = response.responseObject.map((workspace) => ({
+            ...workspace,
+            logo: Kanban,
+          }))
+          setWorkspaces(workspacesData)
+        }
+      } catch (error) {
+        console.error('Failed to fetch workspaces:', error);
+      }
+    }
+
+    fetchWorkspaces();
+
+    // ✅ Cleanup function
+    return () => {
+      isMounted = false;
+    };
+  }, []); // ✅ Empty deps - only run once
+
   return (
     <Sidebar collapsible="icon" {...props}>
       <SidebarHeader>
-        <TeamSwitcher teams={data.teams} />
+        <TeamSwitcher teams={workspaces} />
       </SidebarHeader>
       <SidebarContent>
         <NavMain items={data.navMain} />

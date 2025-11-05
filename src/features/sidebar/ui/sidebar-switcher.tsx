@@ -18,21 +18,28 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/shared/ui/sidebar"
+import type { Workspace } from "@/shared/types"
+
+interface WorkspaceWithLogo extends Workspace {
+  logo: React.ElementType
+}
 
 export function TeamSwitcher({
   teams,
 }: {
-  teams: {
-    name: string
-    logo: React.ElementType
-    plan: string
-  }[]
+  teams: WorkspaceWithLogo[]
 }) {
   const { isMobile } = useSidebar()
-  const [activeTeam, setActiveTeam] = React.useState(teams[0])
+  const [activeTeam, setActiveTeam] = React.useState<WorkspaceWithLogo | undefined>(undefined)
+
+  React.useEffect(() => {
+    if (teams && teams.length > 0 && !activeTeam) {
+      setActiveTeam(teams[0])
+    }
+  }, [teams, activeTeam])
 
   if (!activeTeam) {
-    return null
+    return null 
   }
 
   return (
@@ -45,12 +52,11 @@ export function TeamSwitcher({
               className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
             >
               <div className="text-sidebar-primary-foreground flex size-8 items-center justify-center rounded-lg bg-blue-600">
-                {/* bỏ viền của icon */}
                 <activeTeam.logo className="size-4" />
               </div>
               <div className="grid flex-1 text-left text-sm leading-tight">
-                <span className="truncate font-medium">{activeTeam.name}</span>
-                <span className="truncate text-xs">{activeTeam.plan}</span>
+                <span className="truncate font-medium">{activeTeam.title}</span>
+                <span className="truncate text-xs">{activeTeam.description}</span>
               </div>
               <ChevronsUpDown className="ml-auto" />
             </SidebarMenuButton>
@@ -66,14 +72,14 @@ export function TeamSwitcher({
             </DropdownMenuLabel>
             {teams.map((team, index) => (
               <DropdownMenuItem
-                key={team.name}
+                key={team.title}
                 onClick={() => setActiveTeam(team)}
                 className="gap-2 p-2"
               >
                 <div className="flex size-6 items-center justify-center rounded-md border bg-blue-600">
                   <team.logo className="size-3.5 shrink-0 text-white" />
                 </div>
-                {team.name}
+                {team.title}
                 <DropdownMenuShortcut>⌘{index + 1}</DropdownMenuShortcut>
               </DropdownMenuItem>
             ))}
