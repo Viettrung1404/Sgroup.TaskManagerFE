@@ -1,16 +1,9 @@
 /**
  * Workspace Service - Các API liên quan đến Workspace
  */
-import { apiFactory, API_ENDPOINTS, type ApiResponse, type PaginatedResponse } from '../index';
-
-export interface Workspace {
-  id: string;
-  name: string;
-  description?: string;
-  ownerId: string;
-  createdAt: string;
-  updatedAt: string;
-}
+import type { ServiceResponse } from '@/shared/model/service-response';
+import { apiFactory, API_ENDPOINTS, type ApiResponse } from '../index';
+import type { Workspace } from '@/shared/types';
 
 export interface CreateWorkspaceRequest {
   name: string;
@@ -30,7 +23,7 @@ export interface WorkspaceMember {
 }
 
 export const workspaceService = {
-  getAll: async (params?: { page?: number; limit?: number }): Promise<PaginatedResponse<Workspace>> => {
+  getAll: async (params?: { page?: number; limit?: number }): Promise<ServiceResponse<Workspace[]>> => {
     return apiFactory.get(API_ENDPOINTS.WORKSPACES.BASE, params);
   },
 

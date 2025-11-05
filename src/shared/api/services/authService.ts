@@ -1,19 +1,21 @@
-import { apiFactory, API_ENDPOINTS, type ApiResponse } from '../index';
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { apiFactory, API_ENDPOINTS } from '../index';
+import type { ServiceResponse } from '@/shared/model/service-response';
+
+export interface TokenData {
+  accessToken: string;
+  refreshToken: string;
+  expiresIn: string;
+  tokenType: string;
+}
 
 export interface LoginRequest {
   email: string;
   password: string;
 }
 
-export interface LoginResponse {
-  token: string;
-  refreshToken: string;
-  user: {
-    id: string;
-    email: string;
-    name: string;
-  };
-}
+// ✅ FIX: authService return ServiceResponse trực tiếp (không có ApiResponse wrapper)
+export type LoginResponse = ServiceResponse<TokenData>;
 
 export interface RegisterRequest {
   email: string;
@@ -22,31 +24,28 @@ export interface RegisterRequest {
 }
 
 export const authService = {
-  login: async (credentials: LoginRequest): Promise<ApiResponse<LoginResponse>> => {
+  // ✅ FIX: Return type là ServiceResponse<TokenData>
+  login: async (credentials: LoginRequest): Promise<ServiceResponse<TokenData>> => {
     return apiFactory.post(API_ENDPOINTS.AUTH.LOGIN, credentials);
   },
 
-  register: async (data: RegisterRequest): Promise<ApiResponse<any>> => {
+  register: async (data: RegisterRequest): Promise<ServiceResponse<any>> => {
     return apiFactory.post(API_ENDPOINTS.AUTH.REGISTER, data);
   },
 
-  logout: async (): Promise<ApiResponse<any>> => {
+  logout: async (): Promise<ServiceResponse<any>> => {
     return apiFactory.post(API_ENDPOINTS.AUTH.LOGOUT);
   },
 
-  getMe: async (): Promise<ApiResponse<any>> => {
-    return apiFactory.get(API_ENDPOINTS.AUTH.ME);
-  },
-
-  refreshToken: async (refreshToken: string): Promise<ApiResponse<any>> => {
+  refreshToken: async (refreshToken: string): Promise<ServiceResponse<any>> => {
     return apiFactory.post(API_ENDPOINTS.AUTH.REFRESH_TOKEN, { refreshToken });
   },
 
-  forgotPassword: async (email: string): Promise<ApiResponse<any>> => {
+  forgotPassword: async (email: string): Promise<ServiceResponse<any>> => {
     return apiFactory.post(API_ENDPOINTS.AUTH.FORGOT_PASSWORD, { email });
   },
 
-  resetPassword: async (token: string, newPassword: string): Promise<ApiResponse<any>> => {
-    return apiFactory.post(API_ENDPOINTS.AUTH.RESET_PASSWORD, { token, newPassword });
+  resetPassword: async (accessToken: string, newPassword: string): Promise<ServiceResponse<any>> => {
+    return apiFactory.post(API_ENDPOINTS.AUTH.RESET_PASSWORD, { accessToken, newPassword });
   },
 };

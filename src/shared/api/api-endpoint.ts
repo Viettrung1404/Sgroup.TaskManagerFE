@@ -8,7 +8,6 @@ export const API_ENDPOINTS = {
     FORGOT_PASSWORD: '/auth/forgot-password',
     RESET_PASSWORD: '/auth/reset-password',
     VERIFY_EMAIL: '/auth/verify-email',
-    ME: '/auth/me',
   },
 
   // ========== USER ENDPOINTS ==========
@@ -19,6 +18,7 @@ export const API_ENDPOINTS = {
     UPDATE_PROFILE: '/users/profile',
     CHANGE_PASSWORD: '/users/change-password',
     UPLOAD_AVATAR: '/users/avatar',
+    ME: '/users/me',
   },
 
   // ========== WORKSPACE ENDPOINTS ==========

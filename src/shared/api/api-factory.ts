@@ -1,19 +1,14 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import type { AxiosResponse } from 'axios';
 import apiClient from './api-config';
 import { API_ENDPOINTS } from './api-endpoint';
 
-/**
- * Generic Response Type
- */
 export interface ApiResponse<T = any> {
   data: T;
   message?: string;
   success: boolean;
 }
 
-/**
- * Pagination Response
- */
 export interface PaginatedResponse<T> {
   data: T[];
   total: number;
