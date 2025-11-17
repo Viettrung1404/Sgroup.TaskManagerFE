@@ -55,8 +55,7 @@ export default function DashboardPage() {
         </div>
         <div className="flex gap-2">
           <Button size="lg" variant="outline" onClick={() => setShowArchivedWorkspaces(true)}>
-            <Archive className="mr-2 h-4 w-4" />
-            Archived Workspaces
+            <Archive className="h-4 w-4" />
           </Button>
           <Button size="lg" onClick={handleAddWorkspace}>
             <Plus className="mr-2 h-4 w-4" />

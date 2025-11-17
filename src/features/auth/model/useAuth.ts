@@ -13,11 +13,11 @@ export const useAuth = () => {
     
     try {
       const response = await authService.login({ email, password });
-      const { accessToken, refreshToken } = response.responseObject;
+      const { accessToken } = response.responseObject;
 
-      // Lưu vào localStorage
+      // Lưu access token vào localStorage
+      // Refresh token đã được backend lưu vào cookie tự động
       tokenStorage.setAccessToken(accessToken);
-      tokenStorage.setRefreshToken(refreshToken);
 
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Login failed';

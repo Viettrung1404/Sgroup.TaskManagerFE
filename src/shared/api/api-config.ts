@@ -13,6 +13,7 @@ const apiConfig = {
   headers: {
     'Content-Type': 'application/json',
   },
+  withCredentials: true,
 };
 
 const apiClient: AxiosInstance = axios.create(apiConfig);
@@ -54,7 +55,7 @@ apiClient.interceptors.request.use(
     return config;
   },
   (error) => {
-    console.error('❌ Request Error:', error);
+    console.error('Request Error:', error);
     return Promise.reject(error);
   }
 );
@@ -62,7 +63,7 @@ apiClient.interceptors.request.use(
 // Response Interceptor - Xử lý refresh token
 apiClient.interceptors.response.use(
   (response) => {
-    console.log('✅ API Response:', {
+    console.log('API Response:', {
       status: response.status,
       url: response.config.url,
     });
@@ -89,7 +90,8 @@ apiClient.interceptors.response.use(
     if (error.response?.status === 401 && !originalRequest._retry) {
       // Skip refresh token cho các endpoint auth
       if (originalRequest.url?.includes('/auth/login') || 
-          originalRequest.url?.includes('/auth/refresh-token')) {
+          originalRequest.url?.includes('/auth/refreshToken') ||
+          originalRequest.url?.includes('/auth/register')) {
         tokenStorage.clearTokens();
         window.location.href = '/login';
         return Promise.reject(error);
@@ -114,32 +116,27 @@ apiClient.interceptors.response.use(
       originalRequest._retry = true;
       isRefreshing = true;
 
-      const refreshToken = tokenStorage.getRefreshToken();
-
-      if (!refreshToken) {
-        console.error('No refresh token available');
-        tokenStorage.clearTokens();
-        window.location.href = '/login';
-        return Promise.reject(error);
-      }
-
       try {
         console.log('Attempting to refresh token...');
         
-        // Gọi API refresh token
+        // Gọi API refresh token - Refresh token sẽ được gửi tự động qua cookie
         const response = await axios.post(
-          `${apiConfig.baseURL}auth/refresh-token`,
-          { refreshToken },
-          { headers: { 'Content-Type': 'application/json' } }
+          `${apiConfig.baseURL}auth/refreshToken`,
+          {}, // Empty body vì refresh token ở trong cookie
+          { 
+            headers: { 'Content-Type': 'application/json' },
+            withCredentials: true // Quan trọng: gửi cookies kèm theo request
+          }
         );
 
-        const { accessToken, refreshToken: newRefreshToken } = response.data.responseObject;
+        const { accessToken } = response.data.responseObject;
 
-        // Lưu token mới
-        tokenStorage.setAccessToken(accessToken);
-        if (newRefreshToken) {
-          tokenStorage.setRefreshToken(newRefreshToken);
+        if (!accessToken) {
+          throw new Error('No access token in refresh response');
         }
+
+        // Lưu access token mới (refresh token vẫn ở cookie)
+        tokenStorage.setAccessToken(accessToken);
 
         console.log('Token refreshed successfully');
 
