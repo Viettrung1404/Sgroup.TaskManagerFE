@@ -6,7 +6,7 @@ import {
   SidebarTrigger,
 } from "@/shared/ui/sidebar"
 import { Outlet } from "react-router-dom"
-import { DashboardProvider, useDashboardTitle } from "../context/DashboardContext"
+import { DashboardProvider, useDashboardTitle } from "../context"
 
 function DashboardLayoutContent() {
   const { title } = useDashboardTitle()

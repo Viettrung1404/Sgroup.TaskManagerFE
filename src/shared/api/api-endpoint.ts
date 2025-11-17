@@ -25,14 +25,16 @@ export const API_ENDPOINTS = {
   WORKSPACES: {
     BASE: '/workspaces',
     BY_ID: (id: string) => `/workspaces/${id}`,
-    MEMBERS: (workspaceId: string) => `/workspaces/${workspaceId}/members`,
-    ADD_MEMBER: (workspaceId: string) => `/workspaces/${workspaceId}/members`,
-    REMOVE_MEMBER: (workspaceId: string, memberId: string) => 
-      `/workspaces/${workspaceId}/members/${memberId}`,
-    ARCHIVE: (workspaceId: string) => `/workspaces/${workspaceId}/archive`,
-    REOPEN: (workspaceId: string) => `/workspaces/${workspaceId}/reopen`,
-    UPDATE_ROLE: (workspaceId: string, userId: string) => 
-      `/workspaces/${workspaceId}/members/${userId}`,
+    ARCHIVED: '/workspaces/archived',
+    MEMBERS: (id: string) => `/workspaces/${id}/members`,
+    ADD_MEMBER: (id: string) => `/workspaces/${id}/members`,
+    INVITE_MEMBER: (id: string) => `/workspaces/${id}/invite`,
+    REMOVE_MEMBER: (id: string, memberId: string) => 
+      `/workspaces/${id}/members/${memberId}`,
+    ARCHIVE: (id: string) => `/workspaces/${id}/archive`,
+    REOPEN: (id: string) => `/workspaces/${id}/reopen`,
+    UPDATE_ROLE: (id: string, memberId: string) => 
+      `/workspaces/${id}/members/${memberId}`,
   },
 
   // ========== BOARD ENDPOINTS ==========

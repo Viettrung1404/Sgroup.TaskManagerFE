@@ -1,24 +1,20 @@
 import { useEffect, useState } from "react"
 import { Button } from "@/shared/ui/button"
-import { Plus, Kanban, Archive } from "lucide-react"
+import { Plus, Kanban } from "lucide-react"
 import { useDashboardTitle, WorkspaceList } from "@/features/dashboard"
 import { useDashboard } from "@/features/dashboard/context"
 import { CreateWorkspaceDialog } from "@/shared/components/modal/create-workspace"
-import { ArchivedWorkspacesDialog } from "@/shared/components/modal/archived-workspaces"
 
-export default function DashboardPage() {
+export default function WorkspacePage() {
   const { setTitle } = useDashboardTitle()
   const { workspaces, refreshWorkspaces } = useDashboard()
-  const [isCreatingWorkspace, setIsCreatingWorkspace] = useState(false)
-  const [showArchivedWorkspaces, setShowArchivedWorkspaces] = useState(false)
+  const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false)
 
   const props = workspaces.map(ws => ({
     id: ws.id,
     title: ws.title,
     description: ws.description,
     boardCount: ws.boards.length,
-    membersCount: ws.members.length,
-    members: ws.members,
     boards: ws.boards.map(board => ({
       id: board.id,
       title: board.title,
@@ -32,7 +28,7 @@ export default function DashboardPage() {
   }, [setTitle])
 
   const handleAddWorkspace = () => {
-    setIsCreatingWorkspace(true)
+    setIsCreateDialogOpen(true)
   }
 
   const handleAddBoard = (workspaceId: string) => {
@@ -45,6 +41,12 @@ export default function DashboardPage() {
 
   return (
     <>
+      <CreateWorkspaceDialog 
+        open={isCreateDialogOpen} 
+        onOpenChange={setIsCreateDialogOpen}
+        onSuccess={refreshWorkspaces}
+      />
+      
       {/* Page Header */}
       <div className="flex items-center justify-between">
         <div>
@@ -53,16 +55,10 @@ export default function DashboardPage() {
             Manage your workspaces and boards
           </p>
         </div>
-        <div className="flex gap-2">
-          <Button size="lg" variant="outline" onClick={() => setShowArchivedWorkspaces(true)}>
-            <Archive className="mr-2 h-4 w-4" />
-            Archived Workspaces
-          </Button>
-          <Button size="lg" onClick={handleAddWorkspace}>
-            <Plus className="mr-2 h-4 w-4" />
-            New Workspace
-          </Button>
-        </div>
+        <Button size="lg" onClick={handleAddWorkspace}>
+          <Plus className="mr-2 h-4 w-4" />
+          New Workspace
+        </Button>
       </div>
 
       {/* Workspaces List */}
@@ -70,15 +66,6 @@ export default function DashboardPage() {
         workspaces={props}
         onAddBoard={handleAddBoard}
         onBoardClick={handleBoardClick}
-        onMembersUpdate={refreshWorkspaces}
-      />
-
-      <CreateWorkspaceDialog open={isCreatingWorkspace} onOpenChange={setIsCreatingWorkspace} onSuccess={refreshWorkspaces} />
-      
-      <ArchivedWorkspacesDialog 
-        open={showArchivedWorkspaces} 
-        onOpenChange={setShowArchivedWorkspaces}
-        onSuccess={refreshWorkspaces}
       />
     </>
   )
