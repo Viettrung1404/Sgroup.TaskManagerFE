@@ -29,6 +29,10 @@ export const API_ENDPOINTS = {
     ADD_MEMBER: (workspaceId: string) => `/workspaces/${workspaceId}/members`,
     REMOVE_MEMBER: (workspaceId: string, memberId: string) => 
       `/workspaces/${workspaceId}/members/${memberId}`,
+    ARCHIVE: (workspaceId: string) => `/workspaces/${workspaceId}/archive`,
+    REOPEN: (workspaceId: string) => `/workspaces/${workspaceId}/reopen`,
+    UPDATE_ROLE: (workspaceId: string, userId: string) => 
+      `/workspaces/${workspaceId}/members/${userId}`,
   },
 
   // ========== BOARD ENDPOINTS ==========
