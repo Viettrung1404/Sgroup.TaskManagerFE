@@ -1,3 +1,4 @@
+// frontend/src/shared/ui/separator.tsx
 "use client"
 
 import * as React from "react"

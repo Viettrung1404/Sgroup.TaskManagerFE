@@ -1,3 +1,5 @@
+// frontend/src/features/sidebar/ui/sidebar-main.tsx
+
 "use client"
 
 import { ChevronRight, type LucideIcon } from "lucide-react"

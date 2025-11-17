@@ -1,3 +1,4 @@
+// frontend/src/shared/utils/tokenStorage.ts
 import type { User } from '@/shared/types';
 
 const TOKEN_KEYS = {

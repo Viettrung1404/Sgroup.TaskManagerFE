@@ -1,13 +1,16 @@
+// frontend/src/shared/api/api-endpoint.ts
 export const API_ENDPOINTS = {
   // ========== AUTH ENDPOINTS ==========
   AUTH: {
     LOGIN: '/auth/login',
     REGISTER: '/auth/register',
     LOGOUT: '/auth/logout',
-    REFRESH_TOKEN: '/auth/refresh',
+    REFRESH_TOKEN: '/auth/refreshToken',
     FORGOT_PASSWORD: '/auth/forgot-password',
     RESET_PASSWORD: '/auth/reset-password',
     VERIFY_EMAIL: '/auth/verify-email',
+    ME: '/auth/me',
+    PROFILE: "/auth/{userId}/profile", 
   },
 
   // ========== USER ENDPOINTS ==========
@@ -27,7 +30,7 @@ export const API_ENDPOINTS = {
     BY_ID: (id: string) => `/workspaces/${id}`,
     MEMBERS: (workspaceId: string) => `/workspaces/${workspaceId}/members`,
     ADD_MEMBER: (workspaceId: string) => `/workspaces/${workspaceId}/members`,
-    REMOVE_MEMBER: (workspaceId: string, memberId: string) => 
+    REMOVE_MEMBER: (workspaceId: string, memberId: string) =>
       `/workspaces/${workspaceId}/members/${memberId}`,
   },
 

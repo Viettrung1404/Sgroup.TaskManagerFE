@@ -1,3 +1,4 @@
+// frontend/src/shared/components/LazyLoad.tsx
 import { Suspense } from 'react';
 import type { ReactNode } from 'react';
 import { PageLoader } from './Loader';
