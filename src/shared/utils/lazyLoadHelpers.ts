@@ -1,3 +1,4 @@
+// frontend/src/shared/utils/lazyLoadHelpers.ts
 import { lazy } from 'react';
 import type { ComponentType } from 'react';
 

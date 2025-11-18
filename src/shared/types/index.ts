@@ -1,7 +1,8 @@
+// frontend/src/shared/types/index.ts
 export interface User {
   id: string;
   email: string;
-  name: string | null;
+  name: string ; //không để name null được
   bio: string | null;
   avatarUrl: string | null;
 //   isActive: boolean;
@@ -45,3 +46,29 @@ export interface UpdateUserRequest {
   bio?: string;
   avatarUrl?: string;
 }
+
+export interface OAuthResult {
+  accessToken: string;
+  refreshToken: string;
+  user: User;
+}
+// frontend/src/shared/types/index.ts
+
+export interface Board {
+  id: string
+  name: string
+  description?: string | null
+  lists?: number
+  members?: number
+}
+
+export interface Workspace {
+  id: string
+  title: string
+  description: string | null
+  visibility: "private" | "public"
+  updatedAt: string
+  createdAt: string
+  boards?: Board[] // thêm optional
+}
+

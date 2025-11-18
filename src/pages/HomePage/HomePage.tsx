@@ -1,3 +1,4 @@
+// frontend/src/pages/HomePage/HomePage.tsx
 export const HomePage = () => {
   return <div>
     <div>1. Mô tả cách trình duyệt hoạt động từ lúc bạn truy cập vào một website bất kỳ cho đến lúc có thể tương tác được với website đó?</div>

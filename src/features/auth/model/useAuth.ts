@@ -1,26 +1,26 @@
+// frontend/src/features/auth/model/useAuth.ts
 import { useCallback, useState } from "react";
 import { authService } from "@/shared/api/services/authService";
 import { tokenStorage } from "@/shared/utils/tokenStorage";
-
 export const useAuth = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  // Login function - CẬP NHẬT GLOBAL STATE
   const login = useCallback(async (email: string, password: string) => {
     setIsLoading(true);
     setError(null);
-    
+
     try {
       const response = await authService.login({ email, password });
-      const { accessToken, refreshToken } = response.responseObject;
+      const { accessToken, refreshToken, user } = response.responseObject;
 
-      // Lưu vào localStorage
       tokenStorage.setAccessToken(accessToken);
       tokenStorage.setRefreshToken(refreshToken);
+      tokenStorage.setUser(user);
 
+      return { accessToken, refreshToken, user };
     } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : 'Login failed';
+      const errorMessage = err instanceof Error ? err.message : "Login failed";
       setError(errorMessage);
       throw new Error(errorMessage);
     } finally {
@@ -28,20 +28,18 @@ export const useAuth = () => {
     }
   }, []);
 
-  // Logout function
   const logout = useCallback(async () => {
     setIsLoading(true);
     try {
       await authService.logout();
     } catch (err) {
-      console.error('Logout error:', err);
+      console.error("Logout error:", err);
     } finally {
       tokenStorage.clearTokens();
       setIsLoading(false);
     }
   }, []);
 
-  // Value được share cho toàn app
   return {
     isAuthenticated: !!tokenStorage.getAccessToken(),
     isLoading,
@@ -49,5 +47,4 @@ export const useAuth = () => {
     login,
     logout,
   };
-
 };

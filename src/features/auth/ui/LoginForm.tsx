@@ -1,3 +1,4 @@
+// frontend/src/features/auth/ui/LoginForm.tsx
 import { Button } from "@/shared/ui/button";
 import { Input } from "@/shared/ui/input";
 import {
@@ -7,6 +8,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/shared/ui/card";
+
 import {
   Field,
   FieldDescription,
@@ -15,11 +17,14 @@ import {
   FieldLabel,
 } from "@/shared/ui/field";
 
+import { tokenStorage } from "@/shared/utils/tokenStorage" // nếu chưa import
+import type { OAuthResult } from "@/shared/types";
+
 import { useAuth } from "../model";
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { ROUTES } from '@/shared/config';
+import { ROUTES } from "@/shared/config";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 
@@ -30,112 +35,90 @@ const formSchema = z.object({
 
 type FormSchema = z.infer<typeof formSchema>;
 
-interface LoginFormProps {  
-  onSuccess?: () => void | Promise<void>;
+interface OAuthFormProps {
+  onSuccess: (result: OAuthResult) => void;
 }
 
-export const LoginForm = ({ onSuccess }: LoginFormProps) => {
+
+export const LoginForm = ({ onSuccess }: OAuthFormProps) => {
   const { login, isLoading } = useAuth();
   const navigate = useNavigate();
   const [loginError, setLoginError] = useState<string | null>(null);
 
   const form = useForm<FormSchema>({
     resolver: zodResolver(formSchema),
-    defaultValues: {
-      email: "",
-      password: ""
-    }
+    defaultValues: { email: "", password: "" },
   });
-  
+
   const onSubmit = async (data: FormSchema) => {
     try {
-      setLoginError(null);
-      await login(data.email, data.password);
-      
+      setLoginError(null)
+      const result = await login(data.email, data.password)
+
+      // ⚠️ Kiểm tra cấu trúc trả về
+      console.log("Login result:", result)
+
+      // Nếu result có dạng { responseObject: { user, accessToken, refreshToken } }
+      const { user, accessToken, refreshToken } = result
+
+      tokenStorage.setUser(user)
+      tokenStorage.setAccessToken(accessToken)
+      tokenStorage.setRefreshToken(refreshToken)
+
       if (onSuccess) {
-        await onSuccess();
+        onSuccess(result);
       } else {
-        navigate(ROUTES.DASHBOARD);
+        navigate(ROUTES.DASHBOARD)
       }
     } catch (error) {
-      setLoginError(error instanceof Error ? error.message : 'Login failed');
+      setLoginError(error instanceof Error ? error.message : "Login failed")
     }
-  };
+  }
+
 
   return (
     <div className="flex flex-col gap-6 w-full max-w-md mx-auto">
       <Card>
         <CardHeader>
           <CardTitle>Login to your account</CardTitle>
-          <CardDescription>
-            Enter your email below to login to your account
-          </CardDescription>
+          <CardDescription>Enter your email below to login</CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={form.handleSubmit(onSubmit)}>
             <FieldGroup>
-              {/* Email Field */}
               <Controller
                 name="email"
                 control={form.control}
                 render={({ field, fieldState }) => (
                   <Field data-invalid={fieldState.invalid}>
                     <FieldLabel htmlFor="email">Email</FieldLabel>
-                    <Input
-                      {...field}
-                      id="email"
-                      type="email"
-                      placeholder="m@example.com"
-                      aria-invalid={fieldState.invalid}
-                      disabled={isLoading}
-                    />
-                    {fieldState.invalid && (
-                      <FieldError errors={[fieldState.error]} />
-                    )}
+                    <Input {...field} id="email" type="email" disabled={isLoading} />
+                    {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
                   </Field>
                 )}
               />
-
-              {/* Password Field */}
               <Controller
                 name="password"
                 control={form.control}
                 render={({ field, fieldState }) => (
                   <Field data-invalid={fieldState.invalid}>
                     <FieldLabel htmlFor="password">Password</FieldLabel>
-                    <Input
-                      {...field}
-                      id="password"
-                      type="password"
-                      placeholder="••••••••"
-                      aria-invalid={fieldState.invalid}
-                      disabled={isLoading}
-                    />
-                    {fieldState.invalid && (
-                      <FieldError errors={[fieldState.error]} />
-                    )}
+                    <Input {...field} id="password" type="password" disabled={isLoading} />
+                    {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
                   </Field>
                 )}
               />
-
-              {/* Login Error */}
               {loginError && (
                 <div className="text-sm text-red-500 text-center p-2 bg-red-50 rounded">
                   {loginError}
                 </div>
               )}
-
-              {/* Buttons */}
               <Field>
                 <Button type="submit" disabled={isLoading} className="w-full">
                   {isLoading ? "Logging in..." : "Login"}
                 </Button>
-                <Button variant="outline" type="button" className="w-full">
-                  Login with Google
-                </Button>
                 <FieldDescription className="text-center">
-                  Don&apos;t have an account?{" "}
-                  <a href="/register" className="underline">Sign up</a>
+                  Don&apos;t have an account? <a href="/register" className="underline">Sign up</a>
                 </FieldDescription>
               </Field>
             </FieldGroup>
