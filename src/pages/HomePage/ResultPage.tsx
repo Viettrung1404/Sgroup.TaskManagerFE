@@ -1,3 +1,4 @@
+// frontend/src/pages/HomePage/ResultPage.tsx
 export const ResultPage = () => {
     return (
         <div>

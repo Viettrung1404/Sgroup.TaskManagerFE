@@ -1,3 +1,4 @@
+// frontend/src/app/index.tsx
 import { RouterProvider } from "./providers";
 import { AppRouter } from "./router";
 

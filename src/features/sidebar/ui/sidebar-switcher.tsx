@@ -1,3 +1,5 @@
+// frontend/src/features/sidebar/ui/sidebar-switcher.tsx
+
 "use client"
 
 import * as React from "react"

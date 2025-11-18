@@ -1,3 +1,4 @@
+// frontend/src/features/sidebar/ui/sidebar-project.tsx
 "use client"
 
 import {
